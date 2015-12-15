@@ -1,6 +1,6 @@
 # hadoop-tutorials
 
-## Remte connect to hortonworks sandbox
+## Remote connect to hortonworks sandbox
 
 In VirtualBox:
 * Go to Settings -> Network, disable all current network adapters.

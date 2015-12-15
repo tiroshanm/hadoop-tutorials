@@ -14,18 +14,19 @@ import java.io.IOException;
  */
 public class Admin {
 
-    private Configuration conf;
+    private static  Configuration conf;
+    static {
+        conf = HBaseConfiguration.create();
+    }
 
-    public HBaseAdmin getAdmin() throws MasterNotRunningException, ZooKeeperConnectionException, IOException {
+    public HBaseAdmin getAdmin() throws IOException {
 
         // Instantiating configuration class
         System.out.println("Trying to connect...");
 
-        conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", "sandbox.hortonworks.com");
         conf.set("hbase.zookeeper.property.clientPort", "2181");
         conf.set("zookeeper.znode.parent", "/hbase-unsecure");
-
 
         // Instantiating HbaseAdmin class
         try{

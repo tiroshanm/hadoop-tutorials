@@ -3,7 +3,6 @@ package com.hadoop.hbase.core;
 import com.hadoop.hbase.data_manipulation.CreateHbaseTable;
 import com.hadoop.hbase.interfaces.ICreateHbaseTable;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
 
 import java.io.IOException;
 
@@ -17,6 +16,7 @@ public class HBaseTest {
     public static void main(String[] args) throws IOException {
         hBaseAdmin = new Admin().getAdmin();
         ICreateHbaseTable createTbl = new CreateHbaseTable(hBaseAdmin);
-        HTable event_data_tbl = (HTable) createTbl.createHbaseTable();
+        boolean event_data_tbl_suceess = createTbl.createHbaseTable();
+        System.out.println(event_data_tbl_suceess);
     }
 }

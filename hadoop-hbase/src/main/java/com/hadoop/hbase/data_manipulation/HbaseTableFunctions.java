@@ -1,6 +1,7 @@
 package com.hadoop.hbase.data_manipulation;
 
 import com.hadoop.hbase.interfaces.IHbaseTableFunctions;
+import com.hadoop.hbase.interfaces.IRowKey;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -16,10 +17,12 @@ import java.util.List;
 public class HbaseTableFunctions implements IHbaseTableFunctions {
     private HBaseAdmin hBaseAdmin;
     private Configuration conf;
+    private IRowKey rowkey;
 
-    public HbaseTableFunctions(HBaseAdmin admin){
+    public HbaseTableFunctions(HBaseAdmin admin, IRowKey rkey){
         hBaseAdmin = admin;
-        conf = hBaseAdmin.getConfiguration();
+        conf = admin.getConfiguration();
+        rowkey = rkey;
     }
 
     @Override
@@ -85,39 +88,47 @@ public class HbaseTableFunctions implements IHbaseTableFunctions {
         } catch (MasterNotRunningException mnre) {
             mnre.printStackTrace();
             throw mnre;
-        } catch (ZooKeeperConnectionException zkce) {
+        }catch (ZooKeeperConnectionException zkce) {
             zkce.printStackTrace();
             throw zkce;
+        }
+        catch (TableNotFoundException tnfe){
+            return false;
         }
     }
 
     @Override
-    public boolean addHbaseRecord(String tableName, String rowKey, String family, String qualifier, String value) throws IOException {
+    public boolean addHbaseRecord(String tableName, byte[] rowKey, String family, String qualifier, String value) throws IOException {
         try {
             HTable table = new HTable(conf, tableName);
-            Put put = new Put(Bytes.toBytes(rowKey));
+            Put put = new Put(rowKey);
             put.add(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes
                     .toBytes(value));
             table.put(put);
-            System.out.println("insert recored " + rowKey + " to table "
+            System.out.println("insert record " + rowKey + " to table "
                     + tableName + " ok.");
             return true;
+        } catch (TableNotFoundException tnfe){
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
+
     }
 
     @Override
-    public boolean deleteHbaseRecord(String tableName, String rowKey) throws IOException {
+    public boolean deleteHbaseRecord(String tableName, byte[] rowKey) throws IOException {
         try{
             HTable table = new HTable(conf, tableName);
             List<Delete> list = new ArrayList<Delete>();
-            Delete del = new Delete(rowKey.getBytes());
+            Delete del = new Delete(rowKey);
             list.add(del);
             table.delete(list);
-            System.out.println("del recored " + rowKey + " ok.");
+            System.out.println("del record " + rowKey + " ok.");
             return true;
+        }catch (TableNotFoundException tnfe){
+            return false;
         }catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -125,12 +136,14 @@ public class HbaseTableFunctions implements IHbaseTableFunctions {
     }
 
     @Override
-    public Result getHbaseRecord(String tableName, String rowKey) throws IOException {
+    public Result getHbaseRecord(String tableName,byte[] rowKey) throws IOException {
         try{
             HTable table = new HTable(conf, tableName);
-            Get get = new Get(rowKey.getBytes());
+            Get get = new Get(rowKey);
             Result rs = table.get(get);
             return rs;
+        }catch (TableNotFoundException tnfe){
+            return null;
         }catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -150,7 +163,30 @@ public class HbaseTableFunctions implements IHbaseTableFunctions {
                 rs.add(r);
             }
             return rs;
-        } catch (IOException e){
+        }catch (TableNotFoundException tnfe){
+            return null;
+        }catch (IOException e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public List getRangeHbaseRecord(String tableName, byte[] startkey, byte[] endkey)throws IOException{
+        try{
+            HTable table = new HTable(conf, tableName);
+            Scan s = new Scan();
+            s.setStartRow(startkey);
+            s.setStopRow(endkey);
+            ResultScanner ss = table.getScanner(s);
+            List<Result> rs = new ArrayList<Result>();
+            for(Result r:ss){
+                rs.add(r);
+            }
+            return rs;
+        }catch (TableNotFoundException tnfe){
+            return null;
+        }catch (IOException e){
             e.printStackTrace();
             throw e;
         }

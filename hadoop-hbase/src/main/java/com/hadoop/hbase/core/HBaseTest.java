@@ -20,20 +20,20 @@ public class HBaseTest {
         hBaseAdmin = new Admin().getAdmin();
         IHbaseTableFunctions hBaseTbl = new HbaseTableFunctions(hBaseAdmin);
 
-        String tablename = "iot_event_data";
-        String[] familys = { "event", "terminal" };
+        String tablename = "testDataBase:testTable";
+        String[] familys = { "data"};
 
         System.out.println("===========create table========");
-        hBaseTbl.createHbaseTable(tablename,familys );
+        hBaseTbl.createHbaseTable(tablename,familys);
 
         System.out.println("===========insert records========");
-        hBaseTbl.addHbaseRecord(tablename, "201512120000KKUBE1","event","startTime","0000");
-        hBaseTbl.addHbaseRecord(tablename, "201512120000KKUBE2","event","startTime","0000");
-        hBaseTbl.addHbaseRecord(tablename, "201512120000KKUBE3","event","startTime","0000");
+        hBaseTbl.addHbaseRecord(tablename, "025".getBytes(),"data","code","0000");
+        hBaseTbl.addHbaseRecord(tablename, "654".getBytes(),"data","code","0000");
+        hBaseTbl.addHbaseRecord(tablename, "852".getBytes(),"data","code","0000");
 
-        hBaseTbl.addHbaseRecord(tablename, "201512120010KKUBE1","event","startTime","0010");
-        hBaseTbl.addHbaseRecord(tablename, "201512120020KKUBE1","event","startTime","0020");
-        hBaseTbl.addHbaseRecord(tablename, "201512120030KKUBE1","event","startTime","0030");
+        hBaseTbl.addHbaseRecord(tablename, "025".getBytes(),"data","name","ades");
+        hBaseTbl.addHbaseRecord(tablename, "654".getBytes(),"data","name","fsfd");
+        hBaseTbl.addHbaseRecord(tablename, "852".getBytes(),"data","name","ytrt");
 
         System.out.println("===========show all record========");
         List list = hBaseTbl.getAllHbaseRecord(tablename);
@@ -50,7 +50,7 @@ public class HBaseTest {
         }
 
         System.out.println("===========get one record========");
-        Result getresult = hBaseTbl.getHbaseRecord(tablename, "201512120000KKUBE1");
+        Result getresult = hBaseTbl.getHbaseRecord(tablename, "100".getBytes());
 
         for(KeyValue kv : getresult.raw()){
             System.out.print(new String(kv.getRow()) + " " );
@@ -61,7 +61,7 @@ public class HBaseTest {
         }
 
         System.out.println("===========delete one record========");
-        hBaseTbl.deleteHbaseRecord(tablename, "201512120000KKUBE2");
+        hBaseTbl.deleteHbaseRecord(tablename, "100".getBytes());
 
         List Dellist = hBaseTbl.getAllHbaseRecord(tablename);
 
@@ -76,7 +76,21 @@ public class HBaseTest {
             }
         }
 
+        System.out.println("===========show range scan records========");
+        List rangelist = hBaseTbl.getRangeHbaseRecord(tablename, "010".getBytes(), "100".getBytes());
+
+        for(Object result:rangelist){
+            Result r = (Result) result;
+            for(KeyValue kv : r.raw()){
+                System.out.print(new String(kv.getRow()) + " ");
+                System.out.print(new String(kv.getFamily()) + ":");
+                System.out.print(new String(kv.getQualifier()) + " ");
+                System.out.print(kv.getTimestamp() + " ");
+                System.out.println(new String(kv.getValue()));
+            }
+        }
+
         System.out.println("===========delete table========");
-        hBaseTbl.deleteHbaseTable("test_tbl");
+        hBaseTbl.deleteHbaseTable(tablename);
     }
 }

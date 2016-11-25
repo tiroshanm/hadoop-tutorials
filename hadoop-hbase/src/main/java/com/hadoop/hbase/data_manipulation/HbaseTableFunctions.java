@@ -19,10 +19,9 @@ public class HbaseTableFunctions implements IHbaseTableFunctions {
     private Configuration conf;
     private IRowKey rowkey;
 
-    public HbaseTableFunctions(HBaseAdmin admin, IRowKey rkey){
+    public HbaseTableFunctions(HBaseAdmin admin){
         hBaseAdmin = admin;
         conf = admin.getConfiguration();
-        rowkey = rkey;
     }
 
     @Override

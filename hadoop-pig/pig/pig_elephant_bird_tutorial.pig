@@ -39,9 +39,24 @@ REGISTER $elephantBirdLibPath;
 --  }
 --}
 
-extracted_message = LOAD '$jsonFilePath' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad');
+/**
+* use of Pig Inbuilt function JsonLoader  ------------------------------------------------------------------------------
+*/
+extracted_message_jsonLoader = LOAD '$jsonFilePath' USING JsonLoader('A:chararray,B:chararray,C:chararray,D:chararray,E:chararray,F:chararray,G:tuple(H:datetime,I:tuple(J:chararray,K:tuple(L:chararray,I:bag{(M:datetime,N:chararray,O:tuple(P:chararray,Q:chararray,R:tuple(S:chararray,T:chararray)))})))');
 
-extracted_attributes = FOREACH extracted_message
+extracted_attributes_jsonLoader = FOREACH extracted_message_jsonLoader
+    GENERATE $0,$1,$2,$3,$4,$5,$6 , FLATTEN(G.I.K.I) AS ( M:datetime, N:chararray, O:tuple ( P:chararray, Q:chararray, R:tuple ( S:chararray, T:chararray ) ) );
+
+-- Generate required parameters for Hbase
+json_to_tuple_jsonLoader = FOREACH extracted_attributes_jsonLoader
+    GENERATE A, B, C, D, E, F, G.H AS H, G.I.J AS J, G.I.K.L AS L, M, N, O.P AS P, O.Q AS Q, O.R.S AS S, O.R.T AS T;
+
+/**
+* use of Tweeter Elephant Bird -----------------------------------------------------------------------------------------
+*/
+extracted_message_elephant_bird = LOAD '$jsonFilePath' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad');
+
+extracted_attributes_elephant_bird = FOREACH extracted_message_elephant_bird
                 GENERATE
                         (chararray) $0#'A' AS A,
                         (chararray) $0#'B' AS B,
@@ -54,7 +69,7 @@ extracted_attributes = FOREACH extracted_message
                         (chararray) $0#'G'#'I'#'K'#'L' AS L,
                         FLATTEN($0#'G'#'I'#'K'#'I') AS I;
 
-json_to_tuple = FOREACH extracted_attributes
+json_to_tuple_elephant_bird = FOREACH extracted_attributes_elephant_bird
                GENERATE $0, $1, $2, $3, $4, $5, $6, $7, $8,
                       (datetime) I#'M' AS M,
                       (chararray) I#'N' AS N,
@@ -62,3 +77,5 @@ json_to_tuple = FOREACH extracted_attributes
                       (chararray) I#'O'#'Q' AS Q,
                       (chararray) I#'O'#'R'#'S' AS S,
                       (chararray) I#'O'#'R'#'T' AS T;
+
+------------------------------------------------------------------------------------------------------------------------

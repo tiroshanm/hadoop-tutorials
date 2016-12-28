@@ -26,7 +26,12 @@ public class PigElephantBirdTutorialTest {
     }
 
     @Test
-    public void Should_ReturnExtractedJsonMessageAsTuple_WhenJsonFileIsProvided() throws IOException, ParseException {
-        pigElephantBirdTest.assertOutput("json_to_tuple", new File(TEST_PATH + "resources/output/jsonToTuple.txt"));
+    public void Should_ReturnExtractedJsonMessageAsTuple_WhenJsonFileIsProvided_UsingJsonLoader() throws IOException, ParseException {
+        pigElephantBirdTest.assertOutput("json_to_tuple_jsonLoader", new File(TEST_PATH + "resources/output/jsonToTuple.txt"));
+    }
+
+    @Test
+    public void Should_ReturnExtractedJsonMessageAsTuple_WhenJsonFileIsProvided_UsingElephantBird() throws IOException, ParseException {
+        pigElephantBirdTest.assertOutput("json_to_tuple_elephant_bird", new File(TEST_PATH + "resources/output/jsonToTuple.txt"));
     }
 }

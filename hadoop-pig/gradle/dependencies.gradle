@@ -1,0 +1,26 @@
+ext {
+    groovy = "2.4.5"
+    hadoopCoreVersion = '1.2.1'
+    hadoopCommonVersion = '2.4.0'
+    pig = '0.12.1'
+    jlineVersion = '0.9.94'
+    jUnitVersion = '4.8.1'
+    jodaTimeVerson = '1.6'
+
+    libs = [
+
+            hadoop: [
+                    "org.apache.hadoop:hadoop-core:${hadoopCoreVersion}",
+                    "org.apache.hadoop:hadoop-common:${hadoopCommonVersion}"
+            ],
+            pig   : [
+                    "org.apache.pig:pig:${pig}"
+            ],
+            test  : [
+                    "jline:jline:${jlineVersion}",
+                    "org.apache.pig:pigunit:${pig}",
+                    "junit:junit:${jUnitVersion}",
+                    "joda-time:joda-time:${jodaTimeVerson}"
+            ]
+    ]
+}

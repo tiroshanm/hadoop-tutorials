@@ -1,0 +1,36 @@
+apply from: "$rootDir/gradle/dependencies.gradle"
+apply plugin: 'java'
+apply plugin: 'idea'
+version = 1.0
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile libs.hadoop
+    compile libs.pig
+    testCompile libs.test
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = []
+        }
+        resources {
+            srcDirs = []
+        }
+    }
+    test{
+        java {
+            srcDirs = ['./src/test']
+        }
+        resources {
+            srcDirs = ['./src/test/resources']
+        }
+    }
+}
+

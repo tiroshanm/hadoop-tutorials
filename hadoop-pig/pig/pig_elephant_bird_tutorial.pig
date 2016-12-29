@@ -3,6 +3,11 @@
 * Used V4.15
 */
 
+/**
+* hadoop command
+*  pig -Dmapred.job.queue.name=default -Dpig.additional.jars=/path/to/elephantbird/libraries/*.jar -param elephantBirdLibPath=/path/to/elephantbird/libraries/*.jar -param jsonFilePath=/HDFS/file/path/to/input
+*/
+
 -- Register Required libraries
 REGISTER $elephantBirdLibPath;
 
@@ -47,10 +52,11 @@ extracted_message_jsonLoader = LOAD '$jsonFilePath' USING JsonLoader('A:chararra
 extracted_attributes_jsonLoader = FOREACH extracted_message_jsonLoader
     GENERATE $0,$1,$2,$3,$4,$5,$6 , FLATTEN(G.I.K.I) AS ( M:datetime, N:chararray, O:tuple ( P:chararray, Q:chararray, R:tuple ( S:chararray, T:chararray ) ) );
 
--- Generate required parameters for Hbase
+
 json_to_tuple_jsonLoader = FOREACH extracted_attributes_jsonLoader
     GENERATE A, B, C, D, E, F, G.H AS H, G.I.J AS J, G.I.K.L AS L, M, N, O.P AS P, O.Q AS Q, O.R.S AS S, O.R.T AS T;
 
+DUMP json_to_tuple_jsonLoader;
 /**
 * use of Tweeter Elephant Bird -----------------------------------------------------------------------------------------
 */
@@ -78,4 +84,5 @@ json_to_tuple_elephant_bird = FOREACH extracted_attributes_elephant_bird
                       (chararray) I#'O'#'R'#'S' AS S,
                       (chararray) I#'O'#'R'#'T' AS T;
 
+DUMP json_to_tuple_elephant_bird;
 ------------------------------------------------------------------------------------------------------------------------

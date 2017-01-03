@@ -51,6 +51,22 @@ public class PigUnitTestTutorialTest {
     }
     // -----------------------------------------------------------------------------------------------------------------
 
+    // assert intermediate results using a string array ----------------------------------------------------------------
+    @Test
+    public void Should_ReturnCountedWords_WhenFilteredWordsAreGiven() throws IOException, ParseException {
+        pigUnitTest.assertOutput("filtered_word_count", new String[]{"(42,in)\n" +
+                "(24,is)\n" +
+                "(8,has)\n" +
+                "(46,the)\n" +
+                "(26,that)\n" +
+                "(1,major)\n" +
+                "(3,change)\n" +
+                "(6,family)\n" +
+                "(1,Western)\n" +
+                "(1,occurred)"});
+    }
+    // -----------------------------------------------------------------------------------------------------------------
+
     // Enable STORE - default Pig Unit disable STORE and LOAD ----------------------------------------------------------
     @Test
     public void Should_StoreCountedWordResultsToHDFS_WhenPathIsPassed() throws IOException, ParseException {

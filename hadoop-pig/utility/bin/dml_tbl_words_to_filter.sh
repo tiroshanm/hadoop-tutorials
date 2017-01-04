@@ -21,14 +21,5 @@ function insertToStoreDevice() {
         fi
 }
 ##############HBASE TABLE INSERT STORE DEVICE##########################################
-insertToStoreDevice 'key_major' 'major'
-insertToStoreDevice 'key_change' 'change'
-insertToStoreDevice 'key_change' 'change'
-insertToStoreDevice 'key_that' 'that'
-insertToStoreDevice 'key_has' 'has'
-insertToStoreDevice 'key_occurred' 'occurred'
-insertToStoreDevice 'key_in' 'in'
-insertToStoreDevice 'key_the' 'the'
-insertToStoreDevice 'key_Western' 'Western'
-insertToStoreDevice 'key_family' 'family'
-insertToStoreDevice 'key_is' 'is'
+insertToStoreDevice 'key_hello' 'hello'
+insertToStoreDevice 'key_world' 'world'

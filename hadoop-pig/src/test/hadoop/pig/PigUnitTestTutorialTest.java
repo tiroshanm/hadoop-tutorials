@@ -46,24 +46,16 @@ public class PigUnitTestTutorialTest {
     }
 
     @Test
-    public void Should_ReturnFilteredWords_WhenExtractedWordsAreGiven() throws IOException, ParseException {
-        pigUnitTest.assertOutput("filtered_words", new File(TEST_PATH + "resources/assert/filteredWords.txt"));
+    public void Should_ReturnJoinedWords_WhenExtractedWordsAreGiven() throws IOException, ParseException {
+        pigUnitTest.assertOutput("words_list", new File(TEST_PATH + "resources/assert/wordsList.txt"));
     }
     // -----------------------------------------------------------------------------------------------------------------
 
     // assert intermediate results using a string array ----------------------------------------------------------------
     @Test
     public void Should_ReturnCountedWords_WhenFilteredWordsAreGiven() throws IOException, ParseException {
-        pigUnitTest.assertOutput("filtered_word_count", new String[]{"(42,in)\n" +
-                "(24,is)\n" +
-                "(8,has)\n" +
-                "(46,the)\n" +
-                "(26,that)\n" +
-                "(1,major)\n" +
-                "(3,change)\n" +
-                "(6,family)\n" +
-                "(1,Western)\n" +
-                "(1,occurred)"});
+        pigUnitTest.assertOutput("filtered_word_count", new String[]{"(9,hello)\n" +
+                "(6,world)"});
     }
     // -----------------------------------------------------------------------------------------------------------------
 
